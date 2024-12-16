@@ -86,13 +86,13 @@
                                     <td>{{ $item->status }}</td>
                                     <td>{{ $item->note }}</td>
                                     <td>
-                                        @can('view orders')
+                                        {{-- @can('view orders')
                                             <a href="javascript:void(0)" data-url="{{ route('orders.show', [$item->id]) }}"
                                                 data-title="View Order" data-size="xl" data-location="centered"
                                                 data-ajax-popup="true" data-bs-toggle="tooltip" title="View Order"
                                                 class="btn btn-sm btn-light"><i class="mdi mdi-eye"></i>
                                             </a>
-                                        @endcan
+                                        @endcan --}}
                                         <a href="{{ route('order.print', [$item->id]) }}" target="__blank"
                                             class="btn btn-sm btn-soft-warning ms-1" data-bs-toggle="tooltip"
                                             title="Print">
