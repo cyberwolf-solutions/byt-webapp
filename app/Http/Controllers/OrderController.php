@@ -86,8 +86,8 @@ class OrderController extends Controller {
 
             $order = Order::create($data);
 
-            return response()->json(['success' => true, 'message' => 'Invoice Placed!', 'url' => route('order.print', [$order->id])]);
-            // return json_encode(['success' => true, 'message' => 'Invoice created', 'url' => route('orders.index')]);
+            // return response()->json(['success' => true, 'message' => 'Invoice Placed!', 'url' => route('order.print', [$order->id])]);
+            return json_encode(['success' => true, 'message' => 'Invoice created', 'url' => route('orders.index')]);
         } catch (\Throwable $th) {
             //throw $th;
             return json_encode(['success' => false, 'message' => 'Something went wrong!' . $th]);

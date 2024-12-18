@@ -16,7 +16,7 @@ class CustomerController extends Controller {
      * Display a listing of the resource.
      */
     public function index() {
-        $title = 'Guests';
+        $title = 'Customers';
 
         $breadcrumbs = [
             // ['label' => 'First Level', 'url' => '', 'active' => false],
@@ -30,7 +30,7 @@ class CustomerController extends Controller {
      * Show the form for creating a new resource.
      */
     public function create() {
-        $title = 'Guests';
+        $title = 'Customers';
 
         $breadcrumbs = [
             // ['label' => 'First Level', 'url' => '', 'active' => false],
@@ -77,7 +77,7 @@ class CustomerController extends Controller {
 
             $customer = Customer::create($data);
 
-            return json_encode(['success' => true, 'message' => 'Guests created', 'modal' => true,]);
+            return json_encode(['success' => true, 'message' => 'Customer created', 'modal' => true,]);
         } catch (\Throwable $th) {
             //throw $th;
             return json_encode(['success' => false, 'message' => 'Something went wrong!' . $th]);
@@ -174,7 +174,7 @@ class CustomerController extends Controller {
 
             $customer = Customer::find($id)->update($data);
 
-            return json_encode(['success' => true, 'message' => 'Guests updated', 'url' => route('customers.index')]);
+            return json_encode(['success' => true, 'message' => 'Customer updated', 'url' => route('customers.index')]);
         } catch (\Throwable $th) {
             //throw $th;
             return json_encode(['success' => false, 'message' => 'Something went wrong!' . $th]);
@@ -190,7 +190,7 @@ class CustomerController extends Controller {
             $customer->update(['deleted_by' => Auth::user()->id]);
             $customer->delete();
 
-            return json_encode(['success' => true, 'message' => 'Guests deleted', 'url' => route('customers.index')]);
+            return json_encode(['success' => true, 'message' => 'Customer deleted', 'url' => route('customers.index')]);
         } catch (\Throwable $th) {
             //throw $th;
             return json_encode(['success' => false, 'message' => 'Something went wrong!']);
