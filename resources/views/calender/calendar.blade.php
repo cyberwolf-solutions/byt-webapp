@@ -11,6 +11,22 @@
             <h4>Add Event</h4>
             <label for="newEventTitle">Event Title:</label>
             <input type="text" id="newEventTitle" />
+            <label for="startTime">From (Start Time):</label>
+            <input type="time" id="startTime" required>
+
+            <label for="endTime">To (End Time):</label>
+            <input type="time" id="endTime" required>
+
+
+            <label for="customerSelect">Select Customer:</label>
+            <select id="customerSelect" required>
+                <option value="" disabled selected>Select a customer</option>
+                @foreach ($customer as $cust)
+                    <option value="{{ $cust->id }}">{{ $cust->name }}</option>
+                @endforeach
+            </select>
+
+
             <button id="saveEvent" class="btn btn-primary">Save</button>
             <button id="cancelAdd" class="btn btn-secondary">Cancel</button>
         </div>
@@ -23,10 +39,26 @@
             <h4>Edit Event</h4>
             <label for="eventTitle">Event Title:</label>
             <input type="text" id="eventTitle" />
+            
+            <label for="startTime">From (Start Time):</label>
+            <input type="time" id="startTime" required>
+    
+            <label for="endTime">To (End Time):</label>
+            <input type="time" id="endTime" required>
+    
+            <label for="customerSelect1">Select Customer:</label>
+            <select id="customerSelect1" required>
+                <option value="" disabled>Select a customer</option>
+                @foreach ($customer as $cust)
+                    <option value="{{ $cust->id }}">{{ $cust->name }}</option>
+                @endforeach
+            </select>
+    
             <button id="updateEvent" class="btn btn-primary">Update</button>
             <button id="cancelEdit" class="btn btn-secondary">Cancel</button>
         </div>
     </div>
+    
 
     <!-- Delete or Edit Event Modal -->
     <div id="deleteEditModal" style="display: none;" class="modal">

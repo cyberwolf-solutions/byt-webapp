@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\Event;
 use Illuminate\Http\Request;
 
@@ -23,6 +24,7 @@ class EventController extends Controller
 
         // Fetch events that are not deleted
         $events = Event::whereNull('deleted_at')->get();
+        $customer = Customer::all();
 
         // Format events in FullCalendar-compatible format
         $events = $events->map(function ($event) {
@@ -34,7 +36,7 @@ class EventController extends Controller
         });
 
         // Pass events to the view
-        return view('calender.calendar', compact('title', 'breadcrumbs', 'events'));
+        return view('calender.calendar', compact('title', 'breadcrumbs', 'events','customer'));
     }
 
     public function checkEventOnDate($date)
@@ -47,8 +49,9 @@ class EventController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            // 'start' => 'required|date_format:Y-m-d',
-            // 'end' => 'nullable|date_format:Y-m-d',
+            'start' => 'required|date_format:Y-m-d H:i:s', // Ensure correct format
+            'end' => 'nullable|date_format:Y-m-d H:i:s', // Ensure correct format
+            'customer'=>'required|string|max:255',
         ]);
 
 
@@ -56,6 +59,7 @@ class EventController extends Controller
             'title' => $request->title,
             'start' => $request->start,
             'end' => $request->end ?? $request->start, // Use start date as end date if end is not provided
+            'customer_id'=>$request->customer,
             'created_by' => auth()->id() ?? null, // Assuming you want to track who created the event
         ]);
 
@@ -63,14 +67,14 @@ class EventController extends Controller
     }
     // Soft delete an event
     public function destroy($id)
-{
-    $event = Event::findOrFail($id);
+    {
+        $event = Event::findOrFail($id);
 
-    // Delete the event
-    $event->delete();
+        // Delete the event
+        $event->delete();
 
-    return response()->json(['message' => 'Event deleted successfully.'], 200);
-}
+        return response()->json(['message' => 'Event deleted successfully.'], 200);
+    }
 
 
     // Restore a soft-deleted event
