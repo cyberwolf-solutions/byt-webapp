@@ -2572,186 +2572,223 @@ if (mybutton) {
   }
 }
 document.addEventListener("DOMContentLoaded", function () {
-	console.log("Calendar script loaded");
-	const calendarEl = document.getElementById("calendar");
-  
-	if (calendarEl) {
-	  console.log("Calendar element found");
-  
-	  const calendar = new Calendar(calendarEl, {
-		plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
-		initialView: "dayGridMonth",
-		headerToolbar: {
-		  left: "prev,next today",
-		  center: "title",
-		  right: "dayGridMonth,timeGridWeek,timeGridDay",
-		},
-		events: async function (fetchInfo, successCallback, failureCallback) {
-		  try {
-			const response = await axios.get("/api/events");
-			successCallback(response.data);
-		  } catch (error) {
-			failureCallback(error);
-		  }
-		},
-		dateClick: async function (info) {
-		  const today = new Date().toISOString().split("T")[0]; // Get today's date in 'YYYY-MM-DD' format
-  
-		  if (info.dateStr < today) {
-			return; // Prevent event creation on past dates
-		  }
-  
-		  // Check if an event already exists on the clicked date
-		  const eventExists = await checkIfEventExists(info.dateStr);
-		  if (eventExists) {
-			alert("An event is already scheduled for this date.");
-			return; // Prevent event creation if an event exists
-		  }
-  
-		  // Open the Add Event modal
-		  const addEventModal = document.getElementById('addEventModal');
-		  const newEventTitleInput = document.getElementById('newEventTitle');
-		  const saveEventButton = document.getElementById('saveEvent');
-		  const cancelAddButton = document.getElementById('cancelAdd');
-  
-		  // Show the Add Event modal
-		  addEventModal.style.display = 'block';
-  
-		  // Save button logic (Save the new event title)
-		  saveEventButton.onclick = function () {
-			const newTitle = newEventTitleInput.value;
-			if (newTitle) {
-			  try {
-				// Send the new event to the backend
-				axios.post('/events', {
-				  title: newTitle,
-				  start: info.dateStr,
-				  end: info.dateStr,
-				})
-				  .then(response => {
-					calendar.addEvent(response.data); // Add the new event to the calendar
-					alert("Event added successfully.");
-					addEventModal.style.display = 'none'; // Close the Add Event modal after saving
-				  })
-				  .catch(error => {
-					console.error("Error adding event:", error);
-					alert("An error occurred while adding the event.");
-				  });
-			  } catch (error) {
-				console.error("Error adding event:", error);
-				alert("An error occurred while adding the event.");
-			  }
-			}
-		  };
-  
-		  // Cancel button logic (Close the Add Event modal without saving)
-		  cancelAddButton.onclick = function () {
-			addEventModal.style.display = 'none'; // Close Add Event modal without saving
-		  };
-		},
-  
-		// Add eventClick for editing and deleting events
-		eventClick: async function (info) {
-		  const event = info.event;
-  
-		  const today = new Date().toISOString().split("T")[0]; // Get today's date in 'YYYY-MM-DD' format
-  
-		  if (event.start.toISOString().split("T")[0] < today) {
-			return; // Prevent editing of past events
-		  }
-  
-		  // Open the custom modal for event options (Edit, Delete, Cancel)
-		  const deleteEditModal = document.getElementById('deleteEditModal');
-		  const editEventButton = document.getElementById('editEvent');
-		  const confirmDeleteButton = document.getElementById('confirmDelete');
-		  const cancelDeleteButton = document.getElementById('cancelDelete');
-  
-		  // Show the delete/edit modal
-		  deleteEditModal.style.display = 'block';
-  
-		  // Edit button logic
-		  editEventButton.onclick = function () {
-			// Close the Delete/Edit modal
-			deleteEditModal.style.display = 'none';
-  
-			// Open the Edit Event modal
-			const editEventModal = document.getElementById('editEventModal');
-			const eventTitleInput = document.getElementById('eventTitle');
-			const updateEventButton = document.getElementById('updateEvent');
-			const cancelEditButton = document.getElementById('cancelEdit');
-  
-			// Set the current event title in the input field
-			eventTitleInput.value = event.title;
-  
-			// Show the Edit Event modal
-			editEventModal.style.display = 'block';
-  
-			// Update button logic (Save the new event title)
-			updateEventButton.onclick = function () {
-			  const newTitle = eventTitleInput.value;
-			  if (newTitle && newTitle !== event.title) {
-				try {
-				  axios.put(`/events/${event.id}`, {
-					title: newTitle,
-				  })
-					.then(response => {
-					  event.setProp("title", newTitle); // Update title on the calendar
-					  alert("Event updated successfully.");
-					  editEventModal.style.display = 'none'; // Hide Edit Event modal after update
-					})
-					.catch(error => {
-					  console.error("Error updating event:", error);
-					  alert("An error occurred while updating the event.");
-					});
-				} catch (error) {
-				  console.error("Error updating event:", error);
-				  alert("An error occurred while updating the event.");
-				}
-			  }
-			};
-  
-			// Cancel button logic (Close the Edit Event modal without saving)
-			cancelEditButton.onclick = function () {
-			  editEventModal.style.display = 'none'; // Close Edit Event modal without saving
-			};
-		  };
-  
-		  // Delete button logic
-		  confirmDeleteButton.onclick = async function () {
-			try {
-			  // Make API call to delete the event from the backend
-			  await axios.delete(`/events/${event.id}`);
-			  event.remove(); // Remove the event from the calendar
-			  alert("Event deleted successfully.");
-			  deleteEditModal.style.display = 'none'; // Hide modal after deleting
-			} catch (error) {
-			  console.error("Error deleting event:", error);
-			  alert("An error occurred while deleting the event.");
-			}
-		  };
-  
-		  // Cancel button logic
-		  cancelDeleteButton.onclick = function () {
-			deleteEditModal.style.display = 'none'; // Close the modal without doing anything
-		  };
-		},
-	  });
-  
-	  calendar.render();
-	} else {
-	  console.error("Calendar element not found");
-	}
-  });
-  
-  
-  // Function to check if an event exists on a specific date
-  async function checkIfEventExists(date) {
-	try {
-	  const response = await axios.get(`/api/events/check/${date}`);
-	  return response.data.exists;
-	} catch (error) {
-	  console.error("Error checking for events:", error);
-	  return false;
-	}
+  console.log("Calendar script loaded");
+  const calendarEl = document.getElementById("calendar");
+
+  if (calendarEl) {
+    console.log("Calendar element found");
+
+    const calendar = new Calendar(calendarEl, {
+      plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+      initialView: "dayGridMonth",
+      headerToolbar: {
+        left: "prev,next today",
+        center: "title",
+        right: "dayGridMonth,timeGridWeek,timeGridDay",
+      },
+      events: async function (fetchInfo, successCallback, failureCallback) {
+        try {
+          const response = await axios.get("/api/events");
+          successCallback(response.data);
+        } catch (error) {
+          failureCallback(error);
+        }
+      },
+      dateClick: async function (info) {
+        const today = new Date().toISOString().split("T")[0]; // Get today's date in 'YYYY-MM-DD' format
+
+        if (info.dateStr < today) {
+          return; // Prevent event creation on past dates
+        }
+
+        // Check if an event already exists on the clicked date
+        const eventExists = await checkIfEventExists(info.dateStr);
+        if (eventExists) {
+          alert("An event is already scheduled for this date.");
+          return; // Prevent event creation if an event exists
+        }
+
+        // Open the Add Event modal
+        const addEventModal = document.getElementById("addEventModal");
+        const newEventTitleInput = document.getElementById("newEventTitle");
+        const starttimeINput = document.getElementById("startTime");
+        const endtimeINput = document.getElementById("endTime");
+        const saveEventButton = document.getElementById("saveEvent");
+        const cancelAddButton = document.getElementById("cancelAdd");
+
+        // Show the Add Event modal
+        addEventModal.style.display = "block";
+
+        // Save button logic (Save the new event title)
+        saveEventButton.onclick = function () {
+          const newTitle = newEventTitleInput.value;
+          const startTime = starttimeINput.value;
+          const endTime = endtimeINput.value;
+          const customer = customerSelect.value; 
+
+          // alert (customer);
+          if (newTitle  ) {
+            try {
+              // const today = new Date().toISOString().split('T')[0]; // Get today's date (YYYY-MM-DD)
+              const today = info.dateStr.toString().split("T")[0];
+              // alert(`Start Date: ${today}`);
+              const startDateTime = new Date(`${today} ${startTime}`);
+              const endDateTime = new Date(`${today} ${endTime}`);
+              // const customer = new customer;
+
+              // Format as YYYY-MM-DD HH:MM:SS
+              const formattedStartTime = startDateTime
+                .toISOString()
+                .slice(0, 19)
+                .replace("T", " ");
+              const formattedEndTime = endDateTime
+                .toISOString()
+                .slice(0, 19)
+                .replace("T", " ");
+              // alert(`Start Time: ${formattedStartTime}\nEnd Time: ${formattedEndTime}`);
+              // Send the new event to the backend
+              axios
+                .post("/events", {
+                  title: newTitle,
+                  start: formattedStartTime,
+                  end: formattedEndTime,
+                  customer: customer
+                })
+                .then((response) => {
+                  calendar.addEvent(response.data); // Add the new event to the calendar
+                  alert("Event added successfully.");
+                  addEventModal.style.display = "none"; // Close the Add Event modal after saving
+                })
+                .catch((error) => {
+                  console.error("Error adding event:", error);
+              
+                  // Check for a server response
+                  if (error.response && error.response.data && error.response.data.message) {
+                      // Display the server's error message
+                      alert(`An error occurred: ${error.response.data.message}`);
+                  } else if (error.message) {
+                      // Display a general JavaScript error message
+                      alert(`An error occurred: ${error.message}`);
+                  } else {
+                      // Fallback for unknown errors
+                      alert("An unknown error occurred while adding the event.");
+                  }
+              });
+              
+            } catch (error) {
+              console.error("Error adding event:", error);
+              alert("An error occurred while adding the event.");
+            }
+          }
+        };
+
+        // Cancel button logic (Close the Add Event modal without saving)
+        cancelAddButton.onclick = function () {
+          addEventModal.style.display = "none"; // Close Add Event modal without saving
+        };
+      },
+
+      // Add eventClick for editing and deleting events
+      eventClick: async function (info) {
+        const event = info.event;
+
+        const today = new Date().toISOString().split("T")[0]; // Get today's date in 'YYYY-MM-DD' format
+
+        if (event.start.toISOString().split("T")[0] < today) {
+          return; // Prevent editing of past events
+        }
+
+        // Open the custom modal for event options (Edit, Delete, Cancel)
+        const deleteEditModal = document.getElementById("deleteEditModal");
+        const editEventButton = document.getElementById("editEvent");
+        const confirmDeleteButton = document.getElementById("confirmDelete");
+        const cancelDeleteButton = document.getElementById("cancelDelete");
+
+        // Show the delete/edit modal
+        deleteEditModal.style.display = "block";
+
+        // Edit button logic
+        editEventButton.onclick = function () {
+          // Close the Delete/Edit modal
+          deleteEditModal.style.display = "none";
+
+          // Open the Edit Event modal
+          const editEventModal = document.getElementById("editEventModal");
+          const eventTitleInput = document.getElementById("eventTitle");
+          const updateEventButton = document.getElementById("updateEvent");
+          const cancelEditButton = document.getElementById("cancelEdit");
+
+          // Set the current event title in the input field
+          eventTitleInput.value = event.title;
+
+          // Show the Edit Event modal
+          editEventModal.style.display = "block";
+
+          // Update button logic (Save the new event title)
+          updateEventButton.onclick = function () {
+            const newTitle = eventTitleInput.value;
+            if (newTitle && newTitle !== event.title) {
+              try {
+                axios
+                  .put(`/events/${event.id}`, {
+                    title: newTitle,
+                  })
+                  .then((response) => {
+                    event.setProp("title", newTitle); // Update title on the calendar
+                    alert("Event updated successfully.");
+                    editEventModal.style.display = "none"; // Hide Edit Event modal after update
+                  })
+                  .catch((error) => {
+                    console.error("Error updating event:", error);
+                    alert("An error occurred while updating the event.");
+                  });
+              } catch (error) {
+                console.error("Error updating event:", error);
+                alert("An error occurred while updating the event.");
+              }
+            }
+          };
+
+          // Cancel button logic (Close the Edit Event modal without saving)
+          cancelEditButton.onclick = function () {
+            editEventModal.style.display = "none"; // Close Edit Event modal without saving
+          };
+        };
+
+        // Delete button logic
+        confirmDeleteButton.onclick = async function () {
+          try {
+            // Make API call to delete the event from the backend
+            await axios.delete(`/events/${event.id}`);
+            event.remove(); // Remove the event from the calendar
+            alert("Event deleted successfully.");
+            deleteEditModal.style.display = "none"; // Hide modal after deleting
+          } catch (error) {
+            console.error("Error deleting event:", error);
+            alert("An error occurred while deleting the event.");
+          }
+        };
+
+        // Cancel button logic
+        cancelDeleteButton.onclick = function () {
+          deleteEditModal.style.display = "none"; // Close the modal without doing anything
+        };
+      },
+    });
+
+    calendar.render();
+  } else {
+    console.error("Calendar element not found");
   }
-  
+});
+
+// Function to check if an event exists on a specific date
+async function checkIfEventExists(date) {
+  try {
+    const response = await axios.get(`/api/events/check/${date}`);
+    return response.data.exists;
+  } catch (error) {
+    console.error("Error checking for events:", error);
+    return false;
+  }
+}

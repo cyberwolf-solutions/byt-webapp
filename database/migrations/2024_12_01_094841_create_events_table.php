@@ -12,6 +12,8 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
+            $table->text('customer')->nullable();
+            $table->text('lecturer')->nullable();
             $table->dateTime('start');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->dateTime('end')->nullable();
