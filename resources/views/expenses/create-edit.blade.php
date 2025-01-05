@@ -74,11 +74,21 @@
                         </div>
                     </div>
                     <div class="row">
-                      
+
                         <div class="col-md-6 mb-3 required">
                             <label for="" class="form-label">Note</label>
                             <input type="textarea" name="note" id="" class="form-control"
                                 value="{{ $is_edit ? $data->email : '' }}" placeholder="Enter note" />
+                        </div>
+
+                        <div class="col-md-6 mb-3 required">
+                            <label for="" class="form-label">Expense type</label>
+                            <select class="form-select form-select" name="type" aria-label="Small select example">
+                                <option selected>Open this select menu</option>
+                                @foreach ($data as $key => $item)
+                                    <option value={{ $item->type }}>{{ $item->type }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     <div class="row mb-3">

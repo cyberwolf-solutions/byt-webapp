@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('expenses', function (Blueprint $table) {
             $table->id();
             $table->string('title');            // Expense title or description
+            $table->string('type');            // Expense title or description
             $table->float('total');
             $table->text('notes')->nullable(); // Optional notes about the expense
             $table->unsignedBigInteger('user_id'); // Foreign key for user

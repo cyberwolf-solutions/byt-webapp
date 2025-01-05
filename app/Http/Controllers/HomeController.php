@@ -29,34 +29,35 @@ class HomeController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function index() {
-
-
-        $today = Carbon::today();
-        $totalOrders = Order::all()->count();
-        
+        $today = Carbon::today(); // Today's date
+        $currentTime = Carbon::now(); // Current time
+    
+        // Fetch today's events sorted by start time
+        $eventsToday = Event::whereDate('start', $today)
+            ->orderBy('start')
+            ->get(['title', 'start']);
+    
+        // Default event title
+        $eventTitle = "No Events Today";
+    
+        // Determine the current or next event
+        foreach ($eventsToday as $event) {
+            $eventTime = Carbon::parse($event->start); // Parse start time
+    
+            if ($eventTime->greaterThanOrEqualTo($currentTime)) {
+                $eventTitle = $event->title;
+                break;
+            }
+        }
+    
+        // Other statistics
+        $totalOrders = Order::count();
         $todayDate = Carbon::now()->toDateString();
-
-   
-        
-        $eventToday = Event::whereDate('start', $today)->first(['title']); // Adjust 'start' if needed
-
-        // Retrieve the title of today's event, if it exists
-        $eventTitle = $eventToday ? $eventToday->title : "No Events Today";
-        $totalOrders = Order::all()->count();
-        
-        $todayDate = Carbon::now()->toDateString();
-
-
         $todayOrders = Order::whereDate('created_at', $todayDate)->count();
-
-
-        $customers = Customer::all()->count();
-
-        
-
-        $users = User::all()->count();
-
-
-        return view('home', compact('totalOrders', 'todayOrders' ,'customers' ,'users','eventTitle' ));
+        $customers = Customer::count();
+        $users = User::count();
+    
+        return view('home', compact('totalOrders', 'todayOrders', 'customers', 'users', 'eventTitle'));
     }
+    
 }

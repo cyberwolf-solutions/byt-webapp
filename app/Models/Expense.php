@@ -17,6 +17,7 @@ class Expense extends Model
         'created_by',
         'updated_by',
         'deleted_by',
+        'type',
     ];
 
     // Relationship with User

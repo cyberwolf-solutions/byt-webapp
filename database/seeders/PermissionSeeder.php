@@ -115,9 +115,14 @@ class PermissionSeeder extends Seeder {
             ['name' => 'Product report', 'guard_name' => 'web'],
 
             ['name' => 'Booking report', 'guard_name' => 'web'],
-
+            
             ['name' => 'Manage events', 'guard_name' => 'web'],
-            ['name' => 'Manage expenses', 'guard_name' => 'web'],
+
+            ['name' => 'manage lecturers', 'guard_name' => 'web'],
+            ['name' => 'create lecturers', 'guard_name' => 'web'],
+            ['name' => 'view lecturers', 'guard_name' => 'web'],
+            ['name' => 'edit lecturers', 'guard_name' => 'web'],
+            ['name' => 'delete lecturers', 'guard_name' => 'web'],
 
 
 

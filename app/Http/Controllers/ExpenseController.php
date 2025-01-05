@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Expencestype;
 use App\Models\Expense;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -34,7 +35,7 @@ class ExpenseController extends Controller
      */
     public function create() {
         $title = 'Expenses';
-
+        $data = Expencestype::all();
         $breadcrumbs = [
             // ['label' => 'First Level', 'url' => '', 'active' => false],
             ['label' => $title, 'url' => route('users.index'), 'active' => false],
@@ -44,7 +45,7 @@ class ExpenseController extends Controller
 
         $is_edit = false;
 
-        return view('expenses.create-edit', compact('title', 'breadcrumbs', 'is_edit'));
+        return view('expenses.create-edit', compact('title', 'breadcrumbs', 'is_edit','data'));
     }
 
     /**
@@ -56,6 +57,7 @@ class ExpenseController extends Controller
             'title' => 'required',
             'fee' => 'required',
             'note' => 'required',
+            'type' => 'required',
         ]);
         if ($validator->fails()) {
             $all_errors = null;
@@ -73,6 +75,7 @@ class ExpenseController extends Controller
                 'title' => $request->title,
                 'total' => $request->fee,
                 'notes' => $request->note,
+                'type' => $request->type,
                 'user_id' => Auth::user()->id
             ];
 

@@ -68,7 +68,7 @@
                                                 'customers',
                                                 'events',
                                                 'expenses',
-                                                // 'suppliers',
+                                                'lecturers',
                                                 // 'products',
                                                 // 'categories',
                                                 // 'units',

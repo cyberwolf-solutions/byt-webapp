@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\Event;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class EventController extends Controller
 {
@@ -36,9 +37,23 @@ class EventController extends Controller
         });
 
         // Pass events to the view
-        return view('calender.calendar', compact('title', 'breadcrumbs', 'events','customer'));
+        return view('calender.calendar', compact('title', 'breadcrumbs', 'events', 'customer'));
     }
 
+    public function pastevents()
+    {
+        $title = 'Past events';
+
+        $breadcrumbs = [
+            // ['label' => 'First Level', 'url' => '', 'active' => false],
+            ['label' => $title, 'url' => '', 'active' => true],
+        ];
+
+        $data = Event::where('start', '<', Carbon::now())->get();
+
+
+        return view('pastEvent.index', compact('title', 'breadcrumbs', 'data'));
+    }
     public function checkEventOnDate($date)
     {
         $event = Event::whereDate('start', $date)->first();
@@ -51,7 +66,7 @@ class EventController extends Controller
             'title' => 'required|string|max:255',
             'start' => 'required|date_format:Y-m-d H:i:s', // Ensure correct format
             'end' => 'nullable|date_format:Y-m-d H:i:s', // Ensure correct format
-            'customer'=>'required|string|max:255',
+            'customer' => 'required|string|max:255',
         ]);
 
 
@@ -59,7 +74,7 @@ class EventController extends Controller
             'title' => $request->title,
             'start' => $request->start,
             'end' => $request->end ?? $request->start, // Use start date as end date if end is not provided
-            'customer_id'=>$request->customer,
+            'customer_id' => $request->customer,
             'created_by' => auth()->id() ?? null, // Assuming you want to track who created the event
         ]);
 

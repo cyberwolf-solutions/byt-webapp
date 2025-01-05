@@ -36,6 +36,9 @@ use App\Http\Controllers\RoomTypesController;
 use App\Http\Controllers\StockController;
 use App\Models\Expense;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\ExpencestypeController;
+use App\Http\Controllers\LecturerController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -54,6 +57,7 @@ use App\Http\Controllers\EventController;
 // Route::get('/events', [EventController::class, 'index']);
 // Route::get('/calender', [EventController::class, 'cal']);
 Route::get('/calender', [EventController::class, 'cal'])->name('cal');
+Route::get('/past-events', [EventController::class, 'pastevents'])->name('past.events');
 Route::get('/calender/index', [EventController::class, 'index'])->name('cal.index');
 
 Route::post('/events', [EventController::class, 'store']);
@@ -74,7 +78,7 @@ Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
 
-    
+
 
     Route::get('/user', [ReportsController::class, 'user'])->name('users.ReportsIndex')->middleware('can:manage report');
     Route::get('/customer', [ReportsController::class, 'customer'])->name('customers.ReportsIndex')->middleware('can:manage report');
@@ -96,12 +100,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/update-mail', [SettingsController::class, 'updateMail'])->name('update-mail');
 
     Route::resource('customers', CustomerController::class)->middleware('can:manage customers');
-  
+
     Route::resource('orders', OrderController::class)->middleware('can:manage orders');
- 
+
     Route::get('order/print/{id}', [OrderController::class, 'print'])->middleware('can:manage orders')->name('order.print');
     Route::get('order/show/{id}', [OrderController::class, 'show'])->middleware('can:manage orders')->name('orders.show');
-   
+
 
     //user profile
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
@@ -121,16 +125,17 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/expenses-report', [ReportsController::class, 'product'])->name('product.ReportsIndex')->middleware('can:manage report');
 
 
-    
+
     Route::get('/expense-create', [ExpenseController::class, 'create'])->name('expense.create');
+    Route::get('/expensetype-create', [ExpencestypeController::class, 'create'])->name('expensetype.create');
 
     Route::get('/expense', [ExpenseController::class, 'index'])->name('expense.index');
+    Route::get('/expense-type', [ExpencestypeController::class, 'index'])->name('expensetype.index');
     Route::post('/expense-store', [ExpenseController::class, 'store'])->name('expense.store');
+    Route::post('/expensetype-store', [ExpencestypeController::class, 'store'])->name('expensetype.store');
 
 
     Route::post('/expense-store', [ExpenseController::class, 'store'])->name('expense.store');
-
-
 
     //events
     Route::post('/events/store', [EventController::class, 'store'])->name('event.store');
@@ -140,8 +145,11 @@ Route::middleware(['auth'])->group(function () {
 
     Route::delete('/events/{id}', [EventController::class, 'destroy']);
 
-
-
-
-
+    // lecturer
+    Route::get('/lecturer', [LecturerController::class, 'index'])->name('lecturer.index');
+    Route::get('/lecturer-create', [LecturerController::class, 'create'])->name('lecturer.create');
+    Route::post('/lecturer-update', [LecturerController::class, 'store'])->name('lecturer.update');
+    Route::post('/lecturer-save', [LecturerController::class, 'store'])->name('lecturer.store');
+    Route::get('/lecturer-show/{id}', [LecturerController::class, 'edit'])->name('lecturer.show');
+    Route::delete('/lecturer-delete/{id}', [LecturerController::class, 'destroy'])->name('lecturer.destroy');
 });

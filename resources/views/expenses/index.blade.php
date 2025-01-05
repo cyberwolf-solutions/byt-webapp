@@ -61,6 +61,7 @@
                             <th>Title</th>
                             <th>Note</th>
                             <th>Amount</th>
+                            <th>Type</th>
                             <th>Date</th>
                           
                             {{-- <th>Action</th> --}}
@@ -76,7 +77,7 @@
                                     <td>{{ $settings->currency }}
                                         {{ number_format($item->total ? $item->total : 0, 2) }}
                                     </td>
-
+                                    <td>{{ $item->type }}</td>
                                     {{-- <td>{{ $item->created_at }}</td> --}}
 
                                     <td>{{ \Carbon\Carbon::parse($item->created_at)->format($settings->date_format) }}</td>
