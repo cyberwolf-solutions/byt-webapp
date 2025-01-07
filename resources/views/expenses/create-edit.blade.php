@@ -25,13 +25,8 @@
                         @endforeach
                     </ol>
                 </div>
-
                 <div class="page-title-right">
                     {{-- Add Buttons Here --}}
-                    {{-- <a href="{{ route('users.create') }}" class="btn btn-primary btn-sm" data-bs-toggle="tooltip"
-                        title="Create">
-                        <i class="ri-add-line fs-5"></i>
-                    </a> --}}
                 </div>
             </div>
         </div>
@@ -40,32 +35,17 @@
         <div class="card">
             <div class="card-body">
                 <form method="POST" class="ajax-form"
-                    action="{{ $is_edit ? route('users.update', $data->id) : route('expense.store') }}">
+                    action="{{ $is_edit ? route('users.update', $data->id) : route('expense.store') }}" enctype="multipart/form-data">
                     @csrf
                     @if ($is_edit)
                         @method('PATCH')
                     @endif
 
                     <div class="row">
-                        {{-- <div class="col-md-6 mb-3 required">
-                            <label for="" class="form-label">Customer</label>
-                            <select class="form-control js-example-basic-single" name="role" id="">
-                                <option value="" selected>Select...</option>
-                                @foreach ($customer as $role)
-                                    @if ($role->name == 'Super Admin' && ($is_edit && $data->getRoleNames()[0] != 'Super Admin'))
-                                        @continue
-                                    @endif
-                                    <option value="{{ $role->id }}"
-                                        {{ $is_edit && $data->hasRole($role->name) ? 'selected' : '' }}>
-                                        {{ $role->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div> --}}
                         <div class="col-md-6 mb-3 required">
                             <label for="" class="form-label">Title</label>
                             <input type="text" name="title" id="" class="form-control"
-                                value="{{ $is_edit ? $data->name : '' }}" placeholder="Enter hours" />
+                                value="{{ $is_edit ? $data->name : '' }}" placeholder="Enter title" />
                         </div>
                         <div class="col-md-6 mb-3 required">
                             <label for="" class="form-label">Amount</label>
@@ -73,8 +53,8 @@
                                 value="{{ $is_edit ? $data->name : '' }}" placeholder="Enter fee" />
                         </div>
                     </div>
-                    <div class="row">
 
+                    <div class="row">
                         <div class="col-md-6 mb-3 required">
                             <label for="" class="form-label">Note</label>
                             <input type="textarea" name="note" id="" class="form-control"
@@ -86,11 +66,20 @@
                             <select class="form-select form-select" name="type" aria-label="Small select example">
                                 <option selected>Open this select menu</option>
                                 @foreach ($data as $key => $item)
-                                    <option value={{ $item->type }}>{{ $item->type }}</option>
+                                    <option value="{{ $item->type }}">{{ $item->type }}</option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
+
+                    <!-- File upload -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="document" class="form-label">Upload Document</label>
+                            <input type="file" name="document" id="document" class="form-control" />
+                        </div>
+                    </div>
+
                     <div class="row mb-3">
                         <div class="col-12 text-end">
                             <button type="button" class="btn btn-light me-2"

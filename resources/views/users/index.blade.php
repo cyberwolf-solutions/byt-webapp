@@ -71,10 +71,11 @@
                                             <li><a class="dropdown-item change_password" data-id="{{ $item->id }}"
                                                     href="javascript:void(0)">Change Password</a></li>
                                         @endcan
+
                                         @can('change_status users')
-                                            @if ($item->getRoleNames()[0] != 'Super Admin')
-                                                @if ($item->id != Auth::user()->id)
-                                                    @can('change_status users')
+                                            {{-- @if ($item->getRoleNames()[0] != 'Super Admin') --}}
+                                                {{-- @if ($item->id != Auth::user()->id) --}}
+                                                    {{-- @can('change_status users') --}}
                                                         <li><a class="dropdown-item  @if ($item->is_active) link-danger @else link-success @endif post_confirm"
                                                                 href="javascript:void(0)"
                                                                 data-url="{{ route('users.status', ['id' => $item->id, 'status' => $item->is_active]) }}"
@@ -85,9 +86,9 @@
                                                                     Active
                                                                 @endif
                                                             </a></li>
-                                                    @endcan
-                                                @endif
-                                            @endif
+                                                    {{-- @endcan --}}
+                                                {{-- @endif --}}
+                                            {{-- @endif --}}
                                         @endcan
                                     </ul>
                                 </div>

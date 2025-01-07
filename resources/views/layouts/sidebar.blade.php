@@ -62,27 +62,27 @@
                 @endcanany
 
                 {{-- @canany(['manage customers']) --}}
-                    <li class="nav-item">
-                        <a class="nav-link menu-link" href="#people" data-bs-toggle="collapse" role="button"
-                            aria-expanded="false" aria-controls="people">
-                            <i class="ri-user-3-line"></i> <span>People</span>
-                        </a>
-                        <div class="collapse menu-dropdown" id="people">
-                            <ul class="nav nav-sm flex-column">
-                                @can('manage customers')
-                                    <li class="nav-item">
-                                        <a href="{{ route('customers.index') }}" class="nav-link">Customers</a>
-                                    </li>
-                                @endcan
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="#people" data-bs-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="people">
+                        <i class="ri-user-3-line"></i> <span>People</span>
+                    </a>
+                    <div class="collapse menu-dropdown" id="people">
+                        <ul class="nav nav-sm flex-column">
+                            @can('manage customers')
+                                <li class="nav-item">
+                                    <a href="{{ route('customers.index') }}" class="nav-link">Customers</a>
+                                </li>
+                            @endcan
 
-                                @can('Manage lecturers')
-                                    <li class="nav-item">
-                                        <a href="{{ route('lecturer.index') }}" class="nav-link">Lecturer</a>
-                                    </li>
-                                @endcan
-                            </ul>
-                        </div>
-                    </li>
+                            @can('Manage lecturers')
+                                <li class="nav-item">
+                                    <a href="{{ route('lecturer.index') }}" class="nav-link">Lecturer</a>
+                                </li>
+                            @endcan
+                        </ul>
+                    </div>
+                </li>
                 {{-- @endcanany --}}
 
                 @canany(['manage events'])
@@ -100,10 +100,17 @@
                                 @endcan
 
                                 @can('manage events')
+                                    <li class="nav-item">
+                                        <a href="{{ route('past.events') }}" class="nav-link">Past Events</a>
+                                    </li>
+                                @endcan
+
+                                @can('manage events')
                                 <li class="nav-item">
-                                    <a href="{{ route('past.events') }}" class="nav-link">Past Events</a>
+                                    <a href="{{ route('deleted.events') }}" class="nav-link">Deleted Events</a>
                                 </li>
                             @endcan
+
                             </ul>
                         </div>
                     </li>

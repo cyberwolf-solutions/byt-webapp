@@ -81,7 +81,25 @@
             font-weight: 500;
             color: rgb(56, 56, 55); /* Set font color to black */
         }
+
+        .actions-menu {
+            display: none;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+        }
+    
+        .actions-menu button {
+            border: none;
+            background: transparent;
+            padding: 8px 12px;
+            width: 100%;
+        }
+    
+        .actions-menu button:hover {
+            background: #f8f9fa;
+        }
     </style>
+   
     
 </head>
 

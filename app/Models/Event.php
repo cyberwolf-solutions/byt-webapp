@@ -16,14 +16,16 @@ class Event extends Model
         'description',
         'start',
         'end',
+        'status',
+        'invoice',
         'created_by',
         'updated_by',
         'deleted_by',
-        'customer_id',
-        'lecturer_id',
+        'customer',
+        'lecturer',
     ];
 
     public function customer() {
-        return $this->belongsTo(Customer::class,'customer_id');
+        return $this->belongsTo(Customer::class,'customer');
     }
 }

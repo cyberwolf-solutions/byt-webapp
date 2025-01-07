@@ -11,12 +11,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Jobs\SendWelcomeEmail;
+use App\Models\Event;
+use App\Models\Lecturer;
 
-class OrderController extends Controller {
+class OrderController extends Controller
+{
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $title = 'Invoice';
 
         $breadcrumbs = [
@@ -38,7 +42,8 @@ class OrderController extends Controller {
     /**
      * Show the form for creating a new resource.
      */
-    public function create() {
+    public function create()
+    {
         $title = 'Invoice';
 
         $breadcrumbs = [
@@ -47,61 +52,93 @@ class OrderController extends Controller {
             ['label' => 'Create', 'url' => '', 'active' => true],
         ];
         $customer = Customer::all();
+        $events = Event::where('invoice', 'no')->get();
+        $lec = Lecturer::all();
 
         $is_edit = false;
 
-        return view('order.create-edit', compact('title', 'breadcrumbs', 'customer', 'is_edit'));
+        return view('order.create-edit', compact('title', 'breadcrumbs', 'customer', 'events', 'lec', 'is_edit'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         // Validate the incoming data
         $validator = Validator::make($request->all(), [
             'hours' => 'required',
             'fee' => 'required',
             'note' => 'required',
-            'role' => 'required',
+            'role' => 'required|exists:events,id', // Ensure the event ID exists in the events table
         ]);
+    
         if ($validator->fails()) {
             $all_errors = null;
-
+    
             foreach ($validator->errors()->messages() as $errors) {
                 foreach ($errors as $error) {
                     $all_errors .= $error . "<br>";
                 }
             }
-
+    
             return response()->json(['success' => false, 'message' => $all_errors]);
         }
+    
         try {
+            $event = Event::where('id', $request->role)
+            ->first();
+
+    
+            if (!$event) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pending event not found.',
+                ], 404);
+            }
+    
+            // Create the order
             $data = [
-                'customer_id' => $request->role,
+                'event' => $event->id, // Use the event title here
                 'hours' => $request->hours,
                 'fee' => $request->fee,
                 'note' => $request->note,
                 'created_by' => Auth::user()->id
             ];
-
+    
             $order = Order::create($data);
-
-            // return response()->json(['success' => true, 'message' => 'Invoice Placed!', 'url' => route('order.print', [$order->id])]);
-            return json_encode(['success' => true, 'message' => 'Invoice created', 'url' => route('orders.index')]);
+    
+            // Update event status and invoice column
+            // $event->status = 'complete';
+            $event->invoice = 'yes'; // Update the invoice column to 'yes'
+            $event->save();
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Invoice created',
+                'url' => route('orders.index'),
+            ]);
         } catch (\Throwable $th) {
-            //throw $th;
-            return json_encode(['success' => false, 'message' => 'Something went wrong!' . $th]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong! ' . $th->getMessage(),
+            ]);
         }
     }
+    
+    
+    
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id) {
+    public function show(string $id)
+    {
         $data = Order::find($id);
         return view('order.show', compact('data'));
     }
-    public function print(string $id) {
+    public function print(string $id)
+    {
         $data = Order::find($id);
         return view('order.print', compact('data'));
     }
@@ -109,18 +146,15 @@ class OrderController extends Controller {
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id) {
-    }
+    public function edit(string $id) {}
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id) {
-    }
+    public function update(Request $request, string $id) {}
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id) {
-    }
+    public function destroy(string $id) {}
 }

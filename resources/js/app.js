@@ -2611,8 +2611,11 @@ document.addEventListener("DOMContentLoaded", function () {
         // Open the Add Event modal
         const addEventModal = document.getElementById("addEventModal");
         const newEventTitleInput = document.getElementById("newEventTitle");
+        const newEventDesInput = document.getElementById("newEventDes");
         const starttimeINput = document.getElementById("startTime");
         const endtimeINput = document.getElementById("endTime");
+        // const cusinput = document.getElementById("cus");
+        // const lecinput = document.getElementById("lec");
         const saveEventButton = document.getElementById("saveEvent");
         const cancelAddButton = document.getElementById("cancelAdd");
 
@@ -2622,10 +2625,14 @@ document.addEventListener("DOMContentLoaded", function () {
         // Save button logic (Save the new event title)
         saveEventButton.onclick = function () {
           const newTitle = newEventTitleInput.value;
+          const newDes = newEventDesInput.value;
           const startTime = starttimeINput.value;
           const endTime = endtimeINput.value;
+          // const cus = cusinput.value;
+          const lec = lecSelect.value;
           const customer = customerSelect.value; 
 
+          alert(lec + newDes +customer );
           // alert (customer);
           if (newTitle  ) {
             try {
@@ -2652,7 +2659,9 @@ document.addEventListener("DOMContentLoaded", function () {
                   title: newTitle,
                   start: formattedStartTime,
                   end: formattedEndTime,
-                  customer: customer
+                  customer: customer, // Matches the `customer` field in the controller
+                  lec: lec, 
+                  des : newDes,
                 })
                 .then((response) => {
                   calendar.addEvent(response.data); // Add the new event to the calendar
@@ -2701,6 +2710,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Open the custom modal for event options (Edit, Delete, Cancel)
         const deleteEditModal = document.getElementById("deleteEditModal");
         const editEventButton = document.getElementById("editEvent");
+        const viewEventButton = document.getElementById("viewEvent");
         const confirmDeleteButton = document.getElementById("confirmDelete");
         const cancelDeleteButton = document.getElementById("cancelDelete");
 
@@ -2714,6 +2724,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
           // Open the Edit Event modal
           const editEventModal = document.getElementById("editEventModal");
+          const viewEventModal = document.getElementById("viewEventModal");
           const eventTitleInput = document.getElementById("eventTitle");
           const updateEventButton = document.getElementById("updateEvent");
           const cancelEditButton = document.getElementById("cancelEdit");
@@ -2748,10 +2759,35 @@ document.addEventListener("DOMContentLoaded", function () {
               }
             }
           };
-
           // Cancel button logic (Close the Edit Event modal without saving)
           cancelEditButton.onclick = function () {
             editEventModal.style.display = "none"; // Close Edit Event modal without saving
+          };
+        };
+
+        // view
+        viewEventButton.onclick = function () {
+          // Close the Delete/Edit modal
+          deleteEditModal.style.display = "none";
+
+          // Open the Edit Event modal
+          const editEventModal = document.getElementById("editEventModal");
+          const viewEventModal = document.getElementById("viewEventModal");
+          const eventTitleInput = document.getElementById("eventTitle");
+          const updateEventButton = document.getElementById("updateEvent");
+          // const cancelEditButton = document.getElementById("cancelEdit");
+          const cancelViewButton = document.getElementById("cancelView");
+
+          // Set the current event title in the input field
+          eventTitleInput.value = event.title;
+
+          // Show the Edit Event modal
+          viewEventModal.style.display = "block";
+          editEventModal.style.display = "none";
+
+          // Cancel button logic (Close the Edit Event modal without saving)
+          cancelViewButton.onclick = function () {
+            viewEventModal.style.display = "none"; // Close Edit Event modal without saving
           };
         };
 

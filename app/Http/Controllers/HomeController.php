@@ -13,13 +13,15 @@ use App\Models\Employee;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 
-class HomeController extends Controller {
+class HomeController extends Controller
+{
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware('auth');
     }
 
@@ -28,36 +30,47 @@ class HomeController extends Controller {
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index() {
+    public function index()
+    {
         $today = Carbon::today(); // Today's date
         $currentTime = Carbon::now(); // Current time
-    
-        // Fetch today's events sorted by start time
+
+        // Fetch today's events sorted by start time, excluding 'complete' status
         $eventsToday = Event::whereDate('start', $today)
+            ->where('status', '!=', 'complete')
             ->orderBy('start')
-            ->get(['title', 'start']);
-    
-        // Default event title
+            ->get(['title', 'start', 'id', 'customer']); // Include 'customer' in the query
+
+        // Default values
         $eventTitle = "No Events Today";
-    
+        $eventId = null;
+        $ecus = "No Customer Assigned"; // Default value for $ecus
+
         // Determine the current or next event
         foreach ($eventsToday as $event) {
             $eventTime = Carbon::parse($event->start); // Parse start time
-    
+
             if ($eventTime->greaterThanOrEqualTo($currentTime)) {
                 $eventTitle = $event->title;
+                $eventId = $event->id;
+
+                $end = Carbon::parse($event->end); // Parse start time
+
+                // Fetch customer name via relationship or directly
+                $customerName = $event->customer; // This should be the customer_id (not the name)
+            
                 break;
             }
         }
-    
+
         // Other statistics
         $totalOrders = Order::count();
         $todayDate = Carbon::now()->toDateString();
         $todayOrders = Order::whereDate('created_at', $todayDate)->count();
         $customers = Customer::count();
         $users = User::count();
-    
-        return view('home', compact('totalOrders', 'todayOrders', 'customers', 'users', 'eventTitle'));
+
+        // Return the view with all data
+        return view('home', compact('totalOrders', 'todayOrders', 'customers', 'users', 'eventTitle', 'eventId', 'customerName', 'eventTime', 'end'));
     }
-    
 }

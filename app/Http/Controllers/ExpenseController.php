@@ -58,6 +58,7 @@ class ExpenseController extends Controller
             'fee' => 'required',
             'note' => 'required',
             'type' => 'required',
+            'document' => 'nullable|mimes:pdf,doc,docx,png,jpg,jpeg|max:2048', // Validate document upload (optional)
         ]);
         if ($validator->fails()) {
             $all_errors = null;
@@ -71,11 +72,20 @@ class ExpenseController extends Controller
             return response()->json(['success' => false, 'message' => $all_errors]);
         }
         try {
+
+              // Handle file upload if a document is provided
+        $documentPath = null;
+        if ($request->hasFile('document') && $request->file('document')->isValid()) {
+            // Generate a unique file name
+            $documentPath = $request->file('document')->store('documents', 'public');
+        }
+
             $data = [
                 'title' => $request->title,
                 'total' => $request->fee,
                 'notes' => $request->note,
                 'type' => $request->type,
+                'document' => $documentPath, 
                 'user_id' => Auth::user()->id
             ];
 

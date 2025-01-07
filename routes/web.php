@@ -56,18 +56,23 @@ use App\Http\Controllers\LecturerController;
 
 // Route::get('/events', [EventController::class, 'index']);
 // Route::get('/calender', [EventController::class, 'cal']);
+Route::post('/event/store', [EventController::class, 'store'])->name('event.store');
+
 Route::get('/calender', [EventController::class, 'cal'])->name('cal');
 Route::get('/past-events', [EventController::class, 'pastevents'])->name('past.events');
+Route::get('/deleted-events', [EventController::class, 'deletedevents'])->name('deleted.events');
 Route::get('/calender/index', [EventController::class, 'index'])->name('cal.index');
 
 Route::post('/events', [EventController::class, 'store']);
-Route::delete('/events/{id}', [EventController::class, 'destroy']);
+Route::delete('/events/{id}', [EventController::class, 'destroy'])->name('events.destroy');
+Route::post('/events/complete/{id}', [EventController::class, 'complete'])->name('events.complete');
 Route::post('/events/{id}/restore', [EventController::class, 'restore']);
-
+Route::post('/api/events/view', [EventController::class, 'viewEvent'])->name('events.view');
 // Route::get('/calendar', function () {
 //     return view('calender.calendar');
 // });
 
+Route::post('/api/events/complete/{id}', [EventController::class, 'complete'])->name('events.complete');
 
 Route::middleware(['guest'])->group(function () {
     Route::get('/', function () {
@@ -143,7 +148,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/api/events/check/{date}', [EventController::class, 'checkEventOnDate']);
     Route::put('/events/{id}', [EventController::class, 'update']);
 
-    Route::delete('/events/{id}', [EventController::class, 'destroy']);
+
 
     // lecturer
     Route::get('/lecturer', [LecturerController::class, 'index'])->name('lecturer.index');
