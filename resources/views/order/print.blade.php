@@ -1,134 +1,141 @@
 @extends('layouts.master-without-nav')
 
 @section('title')
-    Print Order
+    Invoice
 @endsection
 
 @section('content')
     <style>
         body {
             background-color: #FFF !important;
+            font-family: Arial, sans-serif;
+        }
+
+        .invoice-container {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .invoice-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .invoice-header h1 {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .invoice-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .invoice-details h6 {
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .customer-info {
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .table {
+            border: 1px solid #ccc;
+            background-color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .table th, .table td {
+            text-align: center;
+            border: 1px solid #ccc;
+        }
+
+        .table th {
+            background-color: #e6e6e6;
+            font-weight: bold;
+        }
+
+        .invoice-footer {
+            text-align: right;
+            font-weight: bold;
         }
     </style>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="row my-2 justify-content-center text-center">
-                <img src="{{ asset('storage/' . $settings->logo_dark) }}" class="img-fluid w-25" alt="">
-                <span class="fs-5">BYT webapplication</span>
+
+    <div class="container-fluid invoice-container">
+        <div class="invoice-header">
+            <img src="{{ asset('storage/' . $settings->logo_dark) }}" alt="Logo" class="img-fluid" width="100">
+            <h1>INVOICE</h1>
+        </div>
+
+        <div class="invoice-details">
+            <div>
+                <h6>Invoice #:</h6>
+                <span>#{{ $data->id }}</span>
             </div>
-            <div class="row justify-content-between mt-5">
-                <div class="col">
-                    <h6 style="font-weight: bold">Order No</h6>
-                    <span>#{{ $settings->invoice($data->id) }}</span>
-                </div>
-                <div class="col">
-                    <h6 style="font-weight: bold">Order Date</h6>
-                    <span>{{ \Carbon\Carbon::parse($data->created_at)->format($settings->date_format) }}</span>
-                </div>
-                <div class="col">
-                    <h6>Order Type</h6>
-                    <span>{{ $data->type }}</span>
-                </div>
-            </div>
-            {{-- <hr> --}}
-            <div class="row mt-4">
-                <div class="col">
-                    <h6 style="font-weight: bold">Customer</h6>
-                    @if ($data->customer_id == 0)
-                        <p>Walking Customer</p>
-                    @else
-                        <p>{{ $data->customer->name }},</p>
-                        <p>{{ $data->customer->contact }},</p>
-                        <p>{{ $data->customer->email }},</p>
-                        <p>{{ $data->customer->address }}.</p>
-                    @endif
-                </div>
-               
-            </div>
-            <hr>
-            <div class="row">
-                <h6 style="font-weight: bold">Detail</h6>
-                <div class="col-12">
-                    <table class="table table-hover align-middle">
-                        <thead>
-                           
-                            <th>Fee</th>
-                            <th>Hours(h)</th>
-                            <th>Note</th>
-                            <th></th>
-                            <th>Total</th>
-                        </thead>
-                        <tbody>
-                            {{-- @foreach ($data->items as $key => $item) --}}
-                                <tr>
-                                    {{-- <td>{{ $key + 1 }}</td> --}}
-                                    <td>{{ $settings->currency }} {{ number_format($data->fee, 2) }}</td>
-                                    <td>{{ $data->hours }}</td>
-                                    <td>{{ $data->note }}</td>
-                                    {{-- <td>{{ $settings->currency }} {{ number_format($item->total, 2) }}</td> --}}
-                                </tr>
-                       
-                            {{-- @endforeach --}}
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="3"></td>
-                                <td>
-                                    Sub Total
-                                </td>
-                                <td>
-                                    {{ $settings->currency }}
-                                    {{ number_format($data->fee ? $data->fee : 0, 2) }}
-                                </td>
-                            </tr>
-                            {{-- <tr>
-                                <td colspan="3"></td>
-                                <td>
-                                    Discount
-                                </td>
-                                <td>
-                                    {{ $settings->currency }}
-                                    {{ number_format($data->payment ? $data->payment->discount : 0, 2) }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="3"></td>
-                                <td>
-                                    VAT
-                                </td>
-                                <td>
-                                    {{ $settings->currency }}
-                                    {{ number_format($data->payment ? $data->payment->vat : 0, 2) }}
-                                </td>
-                            </tr> --}}
-                            {{-- <tr>
-                                <td colspan="3"></td>
-                                <td>
-                                    Service charge
-                                </td>
-                                <td>
-                                    {{ $settings->currency }}
-                                    {{ number_format($data->payment ? $data->payment->service : 0, 2) }}
-                                </td>
-                            </tr> --}}
-                            <tr>
-                                <td colspan="3"></td>
-                                <td>
-                                    <h5 class="fw-bold">Total</h5>
-                                </td>
-                                <td>
-                                    <h5 class="fw-bold">{{ $settings->currency }}
-                                        {{ number_format($data->fee ? $data->fee : 0, 2) }}</h5>
-                                </td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
+            <div>
+                <h6>Date:</h6>
+                <span>{{ \Carbon\Carbon::parse($data->created_at)->format($settings->date_format) }}</span>
             </div>
         </div>
+
+        <div class="customer-info">
+            <h6>Event Details:</h6>
+            @if ($event)
+                <div style="margin-top: 20px">
+                    <p><strong style="width: 130px; display: inline-block;">Event Name</strong> {{ $event->title }}</p>
+                    <p style="margin-top: -15px"><strong style="width: 130px; display: inline-block;">Customer</strong> {{ $event->customer }}</p>
+                    <p style="margin-top: -15px"><strong style="width: 130px; display: inline-block;">Lecturer</strong> {{ $event->lecturer }}</p>
+                    <p style="margin-top: -15px"><strong style="width: 130px; display: inline-block;">Start</strong> {{ \Carbon\Carbon::parse($event->start)->format('d-m-Y') }}</p>
+                    <p style="margin-top: -15px"><strong style="width: 130px; display: inline-block;">End</strong> {{ \Carbon\Carbon::parse($event->end)->format('d-m-Y') }}</p>
+                </div>
+            @else
+                <p>No event details found.</p>
+            @endif
+        </div>
+        
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Fee</th>
+                    <th>Hours</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ $event->title }}</td>
+                    <td>{{ $settings->currency }} {{ number_format($data->fee, 2) }}</td>
+                    <td>{{ $data->hours }}</td>
+                    <td>{{ $settings->currency }} {{ number_format($data->fee, 2) }}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" style="text-align: right;">Sub Total</td>
+                    <td>{{ $settings->currency }} {{ number_format($data->fee, 2) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="text-align: right;">Tax</td>
+                    <td>{{ $settings->currency }} 0.00</td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="text-align: right;"><strong>Total</strong></td>
+                    <td><strong>{{ $settings->currency }} {{ number_format($data->fee, 2) }}</strong></td>
+                </tr>
+            </tfoot>
+        </table>
     </div>
 @endsection
-
 
 @section('script')
     <script>

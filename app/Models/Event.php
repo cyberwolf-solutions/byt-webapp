@@ -28,4 +28,8 @@ class Event extends Model
     public function customer() {
         return $this->belongsTo(Customer::class,'customer');
     }
+    public function order()
+    {
+        return $this->hasOne(Order::class, 'event', 'id');
+    }
 }

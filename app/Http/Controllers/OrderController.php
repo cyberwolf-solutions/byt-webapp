@@ -140,7 +140,9 @@ class OrderController extends Controller
     public function print(string $id)
     {
         $data = Order::find($id);
-        return view('order.print', compact('data'));
+        // $data = Order::with('event')->findOrFail($id);
+        $event = Event::find($data->event);
+        return view('order.print', compact('data','event'));
     }
 
     /**

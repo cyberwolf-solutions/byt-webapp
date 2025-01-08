@@ -23,4 +23,10 @@ class Order extends Model {
     public function user() {
         return $this->hasOne(User::class, 'id', 'created_by');
     }
+    public function event()
+    {
+        return $this->belongsTo(Event::class, 'event', 'id');
+    }
+    
+
 }
