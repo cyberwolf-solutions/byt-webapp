@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Order extends Model {
     use HasFactory, SoftDeletes;
     protected $fillable = [
-        'customer_id',
+        'event',
         'hours',
         'fee',
         'note',
@@ -19,10 +19,14 @@ class Order extends Model {
         'deleted_by',
     ];
 
-    public function customer() {
-        return $this->hasOne(Customer::class, 'id', 'customer_id');
-    }
+  
     public function user() {
         return $this->hasOne(User::class, 'id', 'created_by');
     }
+    public function event()
+    {
+        return $this->belongsTo(Event::class, 'event', 'id');
+    }
+    
+
 }

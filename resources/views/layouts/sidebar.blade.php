@@ -61,23 +61,29 @@
                     </li>
                 @endcanany
 
-                @canany(['manage customers'])
-                    <li class="nav-item">
-                        <a class="nav-link menu-link" href="#people" data-bs-toggle="collapse" role="button"
-                            aria-expanded="false" aria-controls="people">
-                            <i class="ri-user-3-line"></i> <span>People</span>
-                        </a>
-                        <div class="collapse menu-dropdown" id="people">
-                            <ul class="nav nav-sm flex-column">
-                                @can('manage customers')
-                                    <li class="nav-item">
-                                        <a href="{{ route('customers.index') }}" class="nav-link">Customers</a>
-                                    </li>
-                                @endcan
-                            </ul>
-                        </div>
-                    </li>
-                @endcanany
+                {{-- @canany(['manage customers']) --}}
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="#people" data-bs-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="people">
+                        <i class="ri-user-3-line"></i> <span>People</span>
+                    </a>
+                    <div class="collapse menu-dropdown" id="people">
+                        <ul class="nav nav-sm flex-column">
+                            @can('manage customers')
+                                <li class="nav-item">
+                                    <a href="{{ route('customers.index') }}" class="nav-link">Customers</a>
+                                </li>
+                            @endcan
+
+                            @can('Manage lecturers')
+                                <li class="nav-item">
+                                    <a href="{{ route('lecturer.index') }}" class="nav-link">Lecturer</a>
+                                </li>
+                            @endcan
+                        </ul>
+                    </div>
+                </li>
+                {{-- @endcanany --}}
 
                 @canany(['manage events'])
                     <li class="nav-item">
@@ -87,11 +93,24 @@
                         </a>
                         <div class="collapse menu-dropdown" id="calender">
                             <ul class="nav nav-sm flex-column">
-                                @can('manage customers')
+                                @can('manage events')
                                     <li class="nav-item">
                                         <a href="{{ route('cal') }}" class="nav-link">Event Calender</a>
                                     </li>
                                 @endcan
+
+                                @can('manage events')
+                                    <li class="nav-item">
+                                        <a href="{{ route('past.events') }}" class="nav-link">Past Events</a>
+                                    </li>
+                                @endcan
+
+                                @can('manage events')
+                                <li class="nav-item">
+                                    <a href="{{ route('deleted.events') }}" class="nav-link">Deleted Events</a>
+                                </li>
+                            @endcan
+
                             </ul>
                         </div>
                     </li>
@@ -128,8 +147,12 @@
                         <div class="collapse menu-dropdown" id="roomFacilities">
                             <ul class="nav nav-sm flex-column">
                                 <li class="nav-item">
-
                                     <a href="{{ route('expense.index') }}" class="nav-link">Expenses</a>
+                                    {{-- <a href="{{ route('room-facility.index') }}" class="nav-link">Facility List</a> --}}
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="{{ route('expensetype.index') }}" class="nav-link">Expenses Types</a>
                                     {{-- <a href="{{ route('room-facility.index') }}" class="nav-link">Facility List</a> --}}
                                 </li>
                             </ul>

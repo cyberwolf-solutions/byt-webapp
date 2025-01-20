@@ -29,17 +29,7 @@
                     {{-- Add Buttons Here --}}
                     <form action="" id="form">
                         <div class="row">
-                            {{-- <div class="col">
-                                <select class="form-select" name="status" id="" onchange="$('#form').submit()">
-                                    <option value="" {{ $status == '' ? 'selected' : '' }}>All</option>
-                                    <option value="Pending"{{ $status == 'Pending' ? 'selected' : '' }}>Pending</option>
-                                    <option value="InProgress"{{ $status == 'InProgress' ? 'selected' : '' }}>In Progress
-                                    </option>
-                                    <option value="Complete"{{ $status == 'Complete' ? 'selected' : '' }}>Completed
-                                    </option>
-                                </select>
-                            </div> --}}
-
+                            {{-- Add other filter options here --}}
                             <a href="{{ route('expense.create') }}" class="btn btn-primary btn-icon"
                                 data-bs-toggle="tooltip" title="Create">
                                 <i class="ri-add-line"></i>
@@ -61,50 +51,31 @@
                             <th>Title</th>
                             <th>Note</th>
                             <th>Amount</th>
+                            <th>Type</th>
                             <th>Date</th>
-                          
-                            {{-- <th>Action</th> --}}
+                            <th>Document</th> {{-- Add Document column --}}
                         </thead>
                         <tbody>
                             @foreach ($data as $key => $item)
                                 <tr>
                                     <td>#{{ $settings->invoice($item->id) }}</td>
-
-                                    <td>{{ $item->title}}</td>
+                                    <td>{{ $item->title }}</td>
                                     <td>{{ $item->notes }}</td>
-
-                                    <td>{{ $settings->currency }}
-                                        {{ number_format($item->total ? $item->total : 0, 2) }}
-                                    </td>
-
-                                    {{-- <td>{{ $item->created_at }}</td> --}}
-
+                                    <td>{{ $settings->currency }} {{ number_format($item->total ? $item->total : 0, 2) }}</td>
+                                    <td>{{ $item->type }}</td>
                                     <td>{{ \Carbon\Carbon::parse($item->created_at)->format($settings->date_format) }}</td>
 
-                                    {{-- <td>{{ $item->status }}</td>
-                                    <td>{{ $item->note }}</td> --}}
-                                    {{-- <td>
-                                        @can('view orders')
-                                            <a href="javascript:void(0)" data-url="{{ route('orders.show', [$item->id]) }}"
-                                                data-title="View Order" data-size="xl" data-location="centered"
-                                                data-ajax-popup="true" data-bs-toggle="tooltip" title="View Order"
-                                                class="btn btn-sm btn-light"><i class="mdi mdi-eye"></i>
+                                    {{-- Check if the document exists and display it --}}
+                                    <td>
+                                        @if ($item->document)
+                                            {{-- If a document exists, provide a link to view or download --}}
+                                            <a href="{{ asset('storage/' . $item->document) }}" target="_blank" class="btn btn-sm btn-info">
+                                                View Document
                                             </a>
-                                        @endcan
-                                        <a href="{{ route('order.print', [$item->id]) }}" target="__blank"
-                                            class="btn btn-sm btn-soft-warning ms-1" data-bs-toggle="tooltip"
-                                            title="Print">
-                                            <i class="mdi mdi-printer"></i>
-                                        </a>
-                                        @if ($item->table_id != 0)
-                                            <a href="javascript:void(0)" data-url="{{ route('order.complete') }}"
-                                                data-data='{"id":{{ $item->id }}}'
-                                                class="btn btn-sm btn-soft-success ms-1 send-post-ajax"
-                                                data-bs-toggle="tooltip" title="Complete">
-                                                <i class="mdi mdi-check"></i>
-                                            </a>
+                                        @else
+                                            No Document
                                         @endif
-                                    </td> --}}
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

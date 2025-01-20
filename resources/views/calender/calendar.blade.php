@@ -11,6 +11,34 @@
             <h4>Add Event</h4>
             <label for="newEventTitle">Event Title:</label>
             <input type="text" id="newEventTitle" />
+
+            <label for="newEventTitle">Description:</label>
+            <input type="text" id="newEventDes" />
+
+            <label for="startTime">From (Start Time):</label>
+            <input type="time" id="startTime" required>
+
+            <label for="endTime">To (End Time):</label>
+            <input type="time" id="endTime" required>
+
+
+            <label for="customerSelect">Select Customer:</label>
+            <select id="customerSelect" required name="customer">
+                <option value="" disabled selected>Select a customer</option>
+                @foreach ($customer as $cust)
+                    <option value="{{ $cust->name }}">{{ $cust->name }}</option>
+                @endforeach
+            </select>
+
+
+            <label for="lecSelect">Select Lecturer:</label>
+            <select id="lecSelect" required name="lec">
+                <option value="" disabled selected>Select a Lecturer</option>
+                @foreach ($lec as $cust11)
+                    <option value="{{ $cust11->name }}">{{ $cust11->name }}</option>
+                @endforeach
+            </select>
+
             <button id="saveEvent" class="btn btn-primary">Save</button>
             <button id="cancelAdd" class="btn btn-secondary">Cancel</button>
         </div>
@@ -23,10 +51,65 @@
             <h4>Edit Event</h4>
             <label for="eventTitle">Event Title:</label>
             <input type="text" id="eventTitle" />
+            
+            <label for="startTime">From (Start Time):</label>
+            <input type="time" id="startTime" required>
+    
+            <label for="endTime">To (End Time):</label>
+            <input type="time" id="endTime" required>
+    
+            <label for="customerSelect1">Select Customer:</label>
+            <select id="customerSelect1" required>
+                <option value="" disabled>Select a customer</option>
+                @foreach ($customer as $cust)
+                    <option value="{{ $cust->name }}">{{ $cust->name }}</option>
+                @endforeach
+            </select>
+    
+            <label for="lecSelect1">Select Lecturer:</label>
+            <select id="lecSelect1" required>
+                <option value="" disabled selected>Select a Lecturer</option>
+                @foreach ($lec as $cust1)
+                    <option value="{{ $cust1->name }}">{{ $cust1->name }}</option>
+                @endforeach
+            </select>
             <button id="updateEvent" class="btn btn-primary">Update</button>
             <button id="cancelEdit" class="btn btn-secondary">Cancel</button>
         </div>
     </div>
+    
+        <!-- viewEvent Event Modal -->
+        <div id="viewEventModal" style="display: none;" class="modal">
+            <div class="modal-content">
+                <h4>View Event</h4>
+                <label for="eventTitle">Event Title:</label>
+                <input type="text" disabled id="eventTitle" />
+                
+                <label for="startTime">From (Start Time):</label>
+                <input type="time" disabled id="startTime" required>
+        
+                <label for="endTime">To (End Time):</label>
+                <input type="time" disabled id="endTime" required>
+        
+                <label for="customerSelect1">Select Customer:</label>
+                <select id="customerSelect1" required disabled>
+                    <option value="" disabled>Select a customer</option>
+                    @foreach ($customer as $cust)
+                        <option value="{{ $cust->name }}">{{ $cust->name }}</option>
+                    @endforeach
+                </select>
+        
+                <label for="lecSelect1">Select Lecturer:</label>
+                <select id="lecSelect1" required disabled>
+                    <option value="" disabled selected>Select a Lecturer</option>
+                    @foreach ($lec as $cust1)
+                        <option value="{{ $cust1->name }}">{{ $cust1->name }}</option>
+                    @endforeach
+                </select>
+                {{-- <button id="updateEvent" class="btn btn-primary">Update</button> --}}
+                <button id="cancelView" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
 
     <!-- Delete or Edit Event Modal -->
     <div id="deleteEditModal" style="display: none;" class="modal">
@@ -34,6 +117,7 @@
             <h4>Event Options</h4>
             <p>What would you like to do with this event?</p>
             <button id="editEvent" class="btn btn-primary">Edit</button>
+            <button id="viewEvent" class="btn btn-success">View</button>
             <button id="confirmDelete" class="btn btn-danger">Delete</button>
             <button id="cancelDelete" class="btn btn-secondary">Cancel</button>
         </div>
@@ -107,7 +191,7 @@
                 },
                 dateClick: function(info) {
                     // Prompt to add new event
-                    var title = prompt('Enter event title:');
+                    var customertitle = prompt('Enter event title:');
                     if (title) {
                         fetch('/events', {
                                 method: 'POST',

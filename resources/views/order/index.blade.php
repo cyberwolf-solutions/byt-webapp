@@ -72,8 +72,8 @@
                                 <tr>
                                     <td>#{{ $settings->invoice($item->id) }}</td>
 
-                                    <td>{{ $item->customer->name }}</td>
-                                    <td>{{ $item->customer->contact }}</td>
+                                    <td>{{ $item->title }}</td>
+                                    {{-- <td>{{ $item->event->invoice }}</td> --}}
 
                                     <td>{{ $settings->currency }}
                                         {{ number_format($item->fee ? $item->fee : 0, 2) }}

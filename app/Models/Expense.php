@@ -14,9 +14,11 @@ class Expense extends Model
         'total',
         'notes',
         'user_id',
+        'document', 
         'created_by',
         'updated_by',
         'deleted_by',
+        'type',
     ];
 
     // Relationship with User

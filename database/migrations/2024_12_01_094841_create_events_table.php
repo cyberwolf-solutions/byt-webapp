@@ -11,7 +11,11 @@ return new class extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->text('description')->nullable();
+            $table->string('invoice')->nullable();
+            $table->string('description')->nullable();
+            $table->string('customer')->nullable();
+            $table->string('lecturer')->nullable();
+            $table->string('status')->nullable();
             $table->dateTime('start');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->dateTime('end')->nullable();

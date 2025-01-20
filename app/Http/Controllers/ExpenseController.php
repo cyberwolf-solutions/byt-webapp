@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Expencestype;
 use App\Models\Expense;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -34,7 +35,7 @@ class ExpenseController extends Controller
      */
     public function create() {
         $title = 'Expenses';
-
+        $data = Expencestype::all();
         $breadcrumbs = [
             // ['label' => 'First Level', 'url' => '', 'active' => false],
             ['label' => $title, 'url' => route('users.index'), 'active' => false],
@@ -44,7 +45,7 @@ class ExpenseController extends Controller
 
         $is_edit = false;
 
-        return view('expenses.create-edit', compact('title', 'breadcrumbs', 'is_edit'));
+        return view('expenses.create-edit', compact('title', 'breadcrumbs', 'is_edit','data'));
     }
 
     /**
@@ -56,6 +57,8 @@ class ExpenseController extends Controller
             'title' => 'required',
             'fee' => 'required',
             'note' => 'required',
+            'type' => 'required',
+            'document' => 'nullable|mimes:pdf,doc,docx,png,jpg,jpeg|max:2048', // Validate document upload (optional)
         ]);
         if ($validator->fails()) {
             $all_errors = null;
@@ -69,10 +72,20 @@ class ExpenseController extends Controller
             return response()->json(['success' => false, 'message' => $all_errors]);
         }
         try {
+
+              // Handle file upload if a document is provided
+        $documentPath = null;
+        if ($request->hasFile('document') && $request->file('document')->isValid()) {
+            // Generate a unique file name
+            $documentPath = $request->file('document')->store('documents', 'public');
+        }
+
             $data = [
                 'title' => $request->title,
                 'total' => $request->fee,
                 'notes' => $request->note,
+                'type' => $request->type,
+                'document' => $documentPath, 
                 'user_id' => Auth::user()->id
             ];
 

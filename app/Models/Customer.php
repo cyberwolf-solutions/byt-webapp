@@ -17,7 +17,8 @@ class Customer extends Model {
         'address',
         'created_by',
         'updated_by',
-        'deleted_by'
+        'deleted_by',
+        
     ];
 
   
@@ -32,5 +33,9 @@ class Customer extends Model {
 
     public function deletedBy() {
         return $this->hasOne(User::class, 'id', 'deleted_by');
+    }
+
+    public function events(){
+        return $this->hasMany(Event::class,'customer_id');
     }
 }
